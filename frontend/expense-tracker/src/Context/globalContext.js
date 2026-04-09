@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import axios from 'axios';
 
-const BASE_URL = "http://localhost:5000";//base url for backend
+const BASE_URL = "https://react-node-expense-tracker.onrender.com";//base url for backend
 const GlobalContext = React.createContext();
 
 export const GlobalProvider = ({ children }) => {
