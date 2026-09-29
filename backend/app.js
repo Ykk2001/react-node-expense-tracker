@@ -1,12 +1,14 @@
 const express = require('express');
 const app = express()
 const cors = require('cors');
+require('dotenv').config()//This loads the environment variables from the .env file into process.env.
 
 //middlewares
 app.use(express.json())//this parses the data from request url to the req of body
 app.use(cors())//This allows your server to accept requests from different origins.
-require('dotenv').config()//This loads the environment variables from the .env file into process.env.
+
 const PORT = process.env.PORT//accssing port variable from .env file
+
 app.get('/', (req, res) => {
   res.send("hello world");
 })//get
@@ -49,21 +51,6 @@ db()
 2)fs.readdirSync('./routes'): Reads the contents of the ./routes directory synchronously. It returns an array of filenames (e.g., ['user.js', 'product.js']).
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* 
       NOTES

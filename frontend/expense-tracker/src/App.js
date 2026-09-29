@@ -45,8 +45,10 @@ function App() {
     </Appstyled>
   );
 }
-//styled component
 
+export default App;
+
+//styled component
 const Appstyled = styled.div`
 height:100vh;
 background-image:url(${props => props.bg});
@@ -64,10 +66,6 @@ width:0;
 }
 }
 `;
-
-
-export default App;
-
 
 
 

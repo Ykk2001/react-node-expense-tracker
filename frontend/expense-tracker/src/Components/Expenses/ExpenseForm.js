@@ -80,7 +80,7 @@ export default function ExpenseForm() {
                     id='date'
                     placeholderText='Enter a Date'
                     selected={date}
-                    dateFormat='dd/mm/yyyy'
+                    dateFormat='dd/MM/yyyy'
                     onChange={(date) => {
                         setInputState({ ...inputState, date: date })//changes has been made
                     }}

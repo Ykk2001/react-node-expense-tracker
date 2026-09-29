@@ -21,6 +21,7 @@ export default function Form() {
         setInputState({ ...inputState, [name]: e.target.value })
         setError('')
     }
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         addIncome(inputState);
@@ -64,7 +65,7 @@ export default function Form() {
                     id='date'
                     placeholderText='Enter a Date'
                     selected={date}
-                    dateFormat='dd/mm/yyyy'
+                    dateFormat='dd/MM/yyyy'
                     onChange={(date) => {
                         setInputState({ ...inputState, date: date })//changes has been made
                     }}
@@ -162,4 +163,4 @@ const Formstyled = styled.form`
 
 // js
 // Copy code
-// setInputState({ ...inputState, date: date.toISOString() })
+// setInputState({ ...inputState, date: date.toISOString() })  

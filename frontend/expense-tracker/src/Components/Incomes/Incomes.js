@@ -6,10 +6,10 @@ import Form from '../Form/Form'
 import IncomeItem from '../IncomeItem/IncomeItem'
 
 export default function Incomes() {
-  const { addIncome, incomes, getIncomes, deleteIncome, totalIncome } = useGlobalContext()
+  const { addIncome, incomes, getIncomes, deleteIncome, totalIncome } = useGlobalContext();
 
   useEffect(() => {
-    getIncomes()
+    getIncomes();
   }, [])
 
   return (

@@ -1,35 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { GlobalStyle } from './Styles/GlobalStyle';
-import { GlobalProvider } from './Context/globalContext';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { GlobalStyle } from "./Styles/GlobalStyle";
+import { GlobalProvider } from "./Context/globalContext";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-
     <GlobalStyle />
     <GlobalProvider>
       <App />
     </GlobalProvider>
-
-  </React.StrictMode>
+  </React.StrictMode>,
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*NOTES
 1)axios->Axios is a popular JavaScript library used to make HTTP requests from the browser or Node.js. It's often used in React to interact with APIs, allowing you to fetch, post, update, or delete data from a server.
