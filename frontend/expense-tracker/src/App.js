@@ -9,11 +9,30 @@ import Incomes from "./Components/Incomes/Incomes";
 import Expenses from "./Components/Expenses/Expenses";
 import { useGlobalContext } from "./Context/globalContext";
 import Orb from './Components/Orb/Orb';
+import Login from "./Components/Auth/Login";
 
 function App() {
+
+  //check if user Data exist in localstorage
+  const[user,setUser]=useState(JSON.parse(localStorage.getItem('user')||null));
+  console.log("user in App component",user)
+
   const [active, setActive] = useState(1)
   const global = useGlobalContext()
+  
+  const orbMemo = useMemo(() => {
+    return <Orb />
+  }, [])
+
+
+  //if user is not logged in ,show the login screen
+  if(!user)
+  {
+    return <Login setUser={setUser}/>  //if user is not logged in then logged in or register the user
+  }
+
   console.log(global)
+
   const displayData = () => {
     switch (active) {
       case 1:
@@ -30,14 +49,12 @@ function App() {
     }
   }//display Data
 
-  const orbMemo = useMemo(() => {
-    return <Orb />
-  }, [])
+  
   return (
     <Appstyled $bg={bg} className="App">
       {orbMemo}
       <MainLayout>
-        <Navigation active={active} setActive={setActive} />
+        <Navigation active={active} setActive={setActive} user={user} setUser={setUser}/>
         <main>
           {displayData()}
         </main>

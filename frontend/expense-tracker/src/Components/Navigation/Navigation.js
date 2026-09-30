@@ -3,15 +3,28 @@ import styled from 'styled-components';
 import avatar from '../../img/avatar.png'
 import { menuItems } from '../../Utils/menuItems';
 import { signout } from '../../Utils/Icons';
-export default function Navigation({ active, setActive }) {
+export default function Navigation({ active, setActive,user,setUser }) {
+      console.log("user name from the nav componet",user)
+    // Extract name from email
+    const displayName=user?.email ?user.email.split('@')[0]:'User';
+
+    //capitalize first letter
+    const formattedName=displayName.charAt(0).toUpperCase()+displayName.slice(1);
+
+    function handleSignOut()
+     {
+      localStorage.removeItem('user');
+      //refresh or redirect to login page
+      window.location.reload();
+     }
 
     return (
         <NavStyled>
             <div className='user-con'>
                 <img src={avatar} alt=''></img>
                 <div className='text'>
-                    <h2>Mike</h2>
-                    <p>Your Money</p>
+                    <h2>{formattedName}</h2>
+                    <p>{user?.email}</p>
                 </div>
             </div>
             <ul className='menu-items'>
@@ -30,7 +43,7 @@ export default function Navigation({ active, setActive }) {
             {/* menu items in menuItems.js */}
 
             <div className='bottom-nav'>
-                <li>
+                <li onClick={handleSignOut} style={{cursor:'pointer'}}>
                     {signout} Sign Out
                 </li>
             </div>
