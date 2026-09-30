@@ -12,27 +12,62 @@ export default function Login({setUser}) {
 
   console.log("Background image url",bg);
 
- async function handleSubmit(e) {
+//  async function handleSubmit(e) {
+//     e.preventDefault();
+//     setError('');
+//     const endPoint=isLogin?`${API_URL}/login`:`${API_URL}/register`;
+
+//     try{
+//       const response=await axios.post(endPoint,{email,password});
+
+//       //save user data to localStorage
+//       console.log("respose data after login or register",[...response.data],response.data);
+//       const userData=response.data;
+
+//       localStorage.setItem('user',JSON.stringify(userData));//if user is registered or loggedin then save this data in localStorage
+//       setUser(userData);
+//     }
+//    catch (error) {
+//     console.log(error.response?.data);
+
+//     setError(
+//         error.response?.data?.message ||
+//         "Something went wrong. Please try again."
+//     );
+// }
+//   }
+
+
+async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    const endPoint=isLogin?`${API_URL}/login`:`${API_URL}/register`;
 
-    try{
-      const response=await axios.post(endPoint,{email,password});
+    try {
+      if (isLogin) {
+        // --- LOGIN FLOW ---
+        const response = await axios.post(`${API_URL}/login`, { email, password });
+        const userData = response.data;
 
-      //save user data to localStorage
-      const userData=response.data;
-      localStorage.setItem('user',JSON.stringify(userData));//if user is registered or loggedin then save this data in localStorage
-      setUser(userData);
-    }
-   catch (error) {
-    console.log(error.response?.data);
+        // Save user data to localStorage ONLY on login
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+      } else {
+        // --- REGISTER FLOW ---
+        await axios.post(`${API_URL}/register`, { email, password });
 
-    setError(
+        // Do NOT save to localStorage or set user. 
+        // Just switch back to the login view so they can sign in securely.
+        setIsLogin(true);
+        setPassword(""); // Clear password field
+      }
+    } catch (error) {
+      console.log(error.response?.data);
+
+      setError(
         error.response?.data?.message ||
         "Something went wrong. Please try again."
-    );
-}
+      );
+    }
   }
 
   return (
