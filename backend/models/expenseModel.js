@@ -1,63 +1,48 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const ExpenseSchema = new mongoose.Schema(
-    {
-        title: {
-            type: String,
-            required: true,
-            trim: true,
-            maxLength: 50
-        },
-        amount: {
-            type: Number,
-            required: true,
-            trim: true,
-            maxLength: 20,
-        },
-        type: {
-            type: String,
-            default: 'expense'
-        },
-        date: {
-            type: Date,
-            required: true,
-            trim: true
-        },
-        category: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        description: {
-            type: String,
-            required: true,
-            trim: true,
-            maxLength: 20
-        }
-    }, { timestamps: true })
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId, //document id of user
+      ref: "User",
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxLength: 50,
+    },
+    amount: {
+      type: Number,
+      required: true,
+      trim: true,
+      maxLength: 20,
+    },
+    type: {
+      type: String,
+      default: "expense",
+    },
+    date: {
+      type: Date,
+      required: true,
+      trim: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+      maxLength: 20,
+    },
+  },
+  { timestamps: true },
+);
 
-   module.exports=mongoose.model('Expense',ExpenseSchema)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = mongoose.model("Expense", ExpenseSchema);
 
 /*NOTES
 1) Each attribute (field) in the schema specifies the data type, validation rules, and other properties for the field.

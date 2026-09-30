@@ -2,9 +2,10 @@ const Expense = require("../models/expenseModel")//expense model contain expense
 
 const addExpense = async (req, res) => {
     console.log(req.body);
-    const { title, amount, category, description, date } = req.body;
-    //create a new Income Document
+    const { title, amount, category, description, date,userId } = req.body;
+    //create a new Expense Document
     const expense = new Expense({
+        userId,
         title,
         amount,
         category,
@@ -14,7 +15,7 @@ const addExpense = async (req, res) => {
 
     try {
         //validations
-        if (!title || !category || !description || !date) {
+        if (!title || !category || !description || !date||userId) {
             return res.status(400).json({ message: 'All fields are required' })
         }//if
         if (isNaN (amount)|| amount <= 0) {
@@ -34,18 +35,19 @@ const addExpense = async (req, res) => {
 
 }//addincome
 
-//getIncomes
+//getExpense
 const getExpense = async (req, res) => {
     try {
-        const expense = await Expense.find().sort({ createdAt: -1 })//here capital 'Expense" is Schema
-        res.status(200).json(expense)
+        const {userId}=req.query;
+        const expenses = await Expense.find({userId}).sort({ createdAt: -1 })//here capital 'Expense" is Schema
+        res.status(200).json(expenses)
     }
     catch (error) {
         res.status(500).json({ message: "Server Error" })
     }
-}//getIncomes
+}//getExpenses
 
-//deleteIncomes
+//deleteExpense
 const deleteExpense = async (req, res) => {
     try {
         const { id } = req.params;

@@ -2,10 +2,11 @@ const Income = require("../models/incomeModel"); //income model contain income s
 
 const addIncome = async (req, res) => {
   //console.log(req.body);
-  const { title, amount, category, description, date } = req.body;
+  const { title, amount, category, description, date ,userId} = req.body;
   //create a new Income Document
   console.log(req.body);
   const income = new Income({
+    userId,
     title,
     amount,
     category,
@@ -15,7 +16,7 @@ const addIncome = async (req, res) => {
 
   try {
     //validations
-    if (!title || !category || !description || !date || !amount) {
+    if (!title || !category || !description || !date || !amount ||!userId) {
       return res.status(400).json({ message: "All fields are required" });
     } //if
     if (isNaN(amount) || amount <= 0) {
@@ -38,8 +39,9 @@ const addIncome = async (req, res) => {
 //getIncomes
 const getIncomes = async (req, res) => {
   try {
-    const income = await Income.find().sort({ createdAt: -1 });
-    res.status(200).json(income);
+    const {userId}=req.query;//get userId from query params
+    const incomes = await Income.find({userId}).sort({ createdAt: -1 });
+    res.status(200).json(incomes);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }

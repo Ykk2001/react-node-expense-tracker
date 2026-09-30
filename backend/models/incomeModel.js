@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const IncomeSchema = new mongoose.Schema(
     {
         userId:{
-          
+          type:mongoose.Schema.Types.ObjectId,
+          ref:'User',//here logged in user id will come
+          required:true
         },
         title: {
             type: String,
