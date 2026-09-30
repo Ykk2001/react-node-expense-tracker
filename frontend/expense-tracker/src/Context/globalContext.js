@@ -27,11 +27,24 @@ export const GlobalProvider = ({ children }) => {
         getIncomes()
     };//income object is sent to the server(income object contain the inputstatedata which is passed from the Form component)
 
-    const getIncomes = async () => {
+  const getIncomes = async () => {
+    try {
         const response = await axios.get(`${BASE_URL}/get-incomes`);
-        setIncomes(response.data)
-        console.log(response.data)
+
+        setIncomes(response.data);
+
+        console.log("Income data:", response.data);
+    } catch (err) {
+        console.error(
+            "Get incomes error:",
+            err.response?.data || err.message
+        );
+
+        setError(
+            err.response?.data?.message || "Unable to fetch incomes"
+        );
     }
+};
 
     const deleteIncome = async (id) => {
         try {
@@ -72,11 +85,24 @@ export const GlobalProvider = ({ children }) => {
         getExpense()
     };
 
-    const getExpense = async () => {
-        const response = await axios.get(`${BASE_URL}/get-expenses`)
-        setExpenses(response.data)
-        console.log(response.data)
+   const getExpense = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/get-expenses`);
+
+        setExpenses(response.data);
+
+        console.log("Expense data:", response.data);
+    } catch (err) {
+        console.error(
+            "Get expenses error:",
+            err.response?.data || err.message
+        );
+
+        setError(
+            err.response?.data?.message || "Unable to fetch expenses"
+        );
     }
+};
 
     const deleteExpense = async (id) => {
         const res = await axios.delete(`${BASE_URL}/delete-expense/${id}`)

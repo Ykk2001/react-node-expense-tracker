@@ -6,6 +6,8 @@ require('dotenv').config()//This loads the environment variables from the .env f
 const router = require('./routes/auth.js');
 //database code
 const db = require('./db/db.js'); //requiring db.js in main file
+const incomeRouter = require('./routes/incomeRoute.js');
+const expenseRouter = require('./routes/expenseRoute.js');
 
 //middlewares
 app.use(express.json())//this parses the data from request url to the req of body
@@ -20,7 +22,9 @@ app.get('/', (req, res) => {
   res.send("hello world");
 })//get
 
-app.use('/',router);
+app.use('/',router);//this is for register and login data
+app.use('/',incomeRouter)//for income dta
+app.use('/',expenseRouter);//for expense data
 
 // Function to start the server
 app.listen(PORT, () => 
