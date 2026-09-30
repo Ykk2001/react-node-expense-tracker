@@ -1,182 +1,179 @@
 import React, { useState, useContext } from "react";
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = "https://react-node-expense-tracker.onrender.com";//base url for backend
+const BASE_URL = "https://react-node-expense-tracker.onrender.com"; //base url for backend
 const GlobalContext = React.createContext();
 
 export const GlobalProvider = ({ children }) => {
+  const [incomes, setIncomes] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [error, setError] = useState(null);
 
-    const [incomes, setIncomes] = useState([]);
-    const [expenses, setExpenses] = useState([]);
-    const [error, setError] = useState(null);
+  //helper to get userId for a current loggedIn User
 
-    //calculate Incomes
-    const addIncome = async (income) => {
-        try {
-            const response = await axios.post(`${BASE_URL}/add-income`, income);
-            // If successful, you can handle the response here if needed
-            console.log(response.data);
-        } catch (err) {
-            // Ensure err.response exists before accessing its properties
-            if (err.response) {
-                setError(err.response.data.message);
-            } else {
-                setError('Something went wrong');
-            }
-        }
-        getIncomes()
-    };//income object is sent to the server(income object contain the inputstatedata which is passed from the Form component)
+  function getUserId() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user ? user.userId : null;
+  }
+
+  //add Income
+  const addIncome = async (income) => {
+    const userId = getUserId();
+    try {
+      const response = await axios.post(`${BASE_URL}/add-income`, {
+        ...income,
+        userId,
+      });
+      // If successful, you can handle the response here if needed
+      console.log(response.data);
+    } catch (err) {
+      // Ensure err.response exists before accessing its properties
+      if (err.response) {
+        setError(err.response.data.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+    getIncomes();
+  }; //income object is sent to the server(income object contain the inputstatedata which is passed from the Form component)
 
   const getIncomes = async () => {
+    const userId = getUserId();
+
+    if (!userId) {
+      return;
+    }
+
     try {
-        const response = await axios.get(`${BASE_URL}/get-incomes`);
+      const response = await axios.get(`${BASE_URL}/get-incomes`, {
+        params: { userId },
+      });
 
-        setIncomes(response.data);
+      setIncomes(response.data);
 
-        console.log("Income data:", response.data);
+      console.log("Income data:", response.data);
     } catch (err) {
-        console.error(
-            "Get incomes error:",
-            err.response?.data || err.message
-        );
+      console.error("Get incomes error:", err.response?.data || err.message);
 
-        setError(
-            err.response?.data?.message || "Unable to fetch incomes"
-        );
+      setError(err.response?.data?.message || "Unable to fetch incomes");
     }
-};
+  };
 
-    const deleteIncome = async (id) => {
+  const deleteIncome = async (id) => {
+    try {
+      const res = await axios.delete(`${BASE_URL}/delete-income/${id}`);
+      console.log("Delete successful", res.data);
+      console.log("the Id is", id);
+      getIncomes();
+    } catch (err) {
+      console.error("Error deleting income", err.response.data || err.message);
+    }
+  }; //here for delete Incomes we are not passing UserId we passing particular document Id
+
+  const totalIncome = () => {
+    let totalIncome = 0;
+    incomes.forEach((income) => {
+      totalIncome = totalIncome + income.amount;
+    });
+    return totalIncome;
+  };
+  console.log("total", totalIncome());
+
+  //calculate Expenses
+  const addExpense = async (expense) => {
+    const userId = getUserId();
+    try {
+      const response = await axios.post(`${BASE_URL}/add-expense`, {
+        ...expense,
+        userId,
+      });
+      // If successful, you can handle the response here if needed
+      console.log(response.data);
+    } catch (err) {
+      // Ensure err.response exists before accessing its properties
+      if (err.response) {
+        setError(err.response.data.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+    getExpense();
+  };
+
+  const getExpense = async () => {
+    const userId = getUserId();
+    if (!userId) return;
+    try {
+      const response = await axios.get(`${BASE_URL}/get-expenses`, {
+        params: { userId },
+      });
+
+      setExpenses(response.data);
+
+      console.log("Expense data:", response.data);
+    } catch (err) {
+      console.error("Get expenses error:", err.response?.data || err.message);
+
+      setError(err.response?.data?.message || "Unable to fetch expenses");
+    }
+  };
+
+const deleteExpense = async (id) => {
         try {
-            const res = await axios.delete(`${BASE_URL}/delete-income/${id}`);
-            console.log('Delete successful', res.data)
-            console.log("the Id is", id)
-            getIncomes();
-        }
-        catch (err) {
-            console.error('Error deleting income', err.response.data || err.message);
-        }
-
-    }
-
-    const totalIncome = () => {
-        let totalIncome = 0;
-        incomes.forEach((income) => {
-            totalIncome = totalIncome + income.amount;
-        })
-        return totalIncome;
-    }
-    console.log("total", totalIncome())
-
-    //calculate Expenses
-    const addExpense = async (expense) => {
-        try {
-            const response = await axios.post(`${BASE_URL}/add-expense`, expense);
-            // If successful, you can handle the response here if needed
-            console.log(response.data);
+            await axios.delete(`${BASE_URL}/delete-expense/${id}`);
+            getExpense();
         } catch (err) {
-            // Ensure err.response exists before accessing its properties
-            if (err.response) {
-                setError(err.response.data.message);
-            } else {
-                setError('Something went wrong');
-            }
+            console.error('Error deleting expense', err);
         }
-        getExpense()
     };
+  const totalExpenses = () => {
+    let totalExpense = 0;
+    expenses.forEach((expense) => {
+      totalExpense = totalExpense + expense.amount;
+    });
+    return totalExpense;
+  }; //totalexpense
 
-   const getExpense = async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}/get-expenses`);
+  const totalBalance = () => {
+    return totalIncome() - totalExpenses();
+  }; //totalBalance
 
-        setExpenses(response.data);
+  const transactionHistory = () => {
+    const history = [...incomes, ...expenses];
+    history.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    console.log("total history of incomes and expenses",history);
+    return history.slice(0, 4);
+  };
 
-        console.log("Expense data:", response.data);
-    } catch (err) {
-        console.error(
-            "Get expenses error:",
-            err.response?.data || err.message
-        );
-
-        setError(
-            err.response?.data?.message || "Unable to fetch expenses"
-        );
-    }
+  return (
+    <GlobalContext.Provider
+      value={{
+        addIncome,
+        getIncomes,
+        incomes,
+        deleteIncome,
+        totalIncome,
+        addExpense,
+        getExpense,
+        deleteExpense,
+        totalExpenses,
+        expenses,
+        totalBalance,
+        transactionHistory,
+        error,
+        setError,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
 };
-
-    const deleteExpense = async (id) => {
-        const res = await axios.delete(`${BASE_URL}/delete-expense/${id}`)
-        getExpense()
-    }
-
-    const totalExpenses =  () => {
-        let totalExpense = 0;
-        expenses.forEach((expense) => {
-            totalExpense = totalExpense + expense.amount;
-        })
-        return totalExpense;
-    }//totalexpense
-
-    const totalBalance=()=>{
-        return  totalIncome()-totalExpenses();
-    }//totalBalance
-
-    const transactionHistory=()=>{
-        const history=[...incomes,...expenses]
-       history.sort((a,b)=>{
-        return new Date(b.createdAt) - new Date(a.createdAt)
-       })
-       return history.slice(0,4);
-    }
-
-    return (
-        <GlobalContext.Provider value={{
-            addIncome,
-            getIncomes,
-            incomes,
-            deleteIncome,
-            totalIncome,
-            addExpense,
-            getExpense,
-            deleteExpense,
-            totalExpenses,
-            expenses,
-            totalBalance,
-            transactionHistory,
-            error,
-            setError
-
-        }}>
-            {children}
-        </GlobalContext.Provider>
-    )
-
-}
 
 export const useGlobalContext = () => {
-    return useContext(GlobalContext)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return useContext(GlobalContext);
+};
 
 /*NOTES
 1)globalContext will have two components associated with it:
